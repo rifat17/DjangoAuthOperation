@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import (
     CustomUserRegSerializer,
     CustomUserLoginSerializer,
-    CustomUserSerializer
+    CustomUserSerializer,
+    TokenSerializer,
 )
 from rest_framework.authtoken.models import Token
 
@@ -41,15 +42,22 @@ class LoginAPIView(ObtainAuthToken):
         try:
             if login_serializer.is_valid():
                 user = login_serializer.validated_data
-                token = Token.objects.create(user=user)
+                token = Token.objects.get(user=user)
+                # try:
+                #     token = Token.objects.create(user=user)
+                #     print('TRY : ', token)
+                # except:
+                #     token = Token.objects.get(user=user)
+                #     print('EXCEPT : ', token)
 
                 return Response({
-                    'token': token.key,
+                    'token': str(token),
                     'email': user.email,
                 },
                     status=status.HTTP_200_OK
                 )
-        except:
+        except Exception as ex:
+            print(request.data, " : ", ex)
             return Response({
                 'message': 'Unable to log in with provided credentials.'
             },

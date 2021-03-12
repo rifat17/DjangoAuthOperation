@@ -5,6 +5,7 @@ from django.contrib.auth import (
     password_validation,
     authenticate,
 )
+from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.password_validation import validate_password
@@ -83,3 +84,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "username", "address"]
+
+
+class TokenSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=40)
+

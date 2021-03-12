@@ -122,6 +122,10 @@ class AccountTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, 'token')
         self.assertContains(response, 'email')
+        response = self.client.post(self.login_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, 'token')
+        self.assertContains(response, 'email')
 
     def test_login_fail(self):
         createUser()
@@ -172,7 +176,6 @@ class AccountTest(APITestCase):
         createUser("tokenuser", "tokenuser@test.com", "12345678", "Cumilla")
 
         response = self.client.post(self.login_url, data=login_data)
-        # print(response.data['token'])
         token = response.data['token']
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
@@ -199,5 +202,4 @@ class AccountTest(APITestCase):
         response = client.get(self.users)
         # print(response.data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        print(response.data)
         self.assertEqual(len(response.data), 1)
